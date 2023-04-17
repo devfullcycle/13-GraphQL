@@ -21,7 +21,7 @@ func (r *categoryResolver) Courses(ctx context.Context, obj *model.Category) ([]
 		coursesModel = append(coursesModel, &model.Course{
 			ID:          course.ID,
 			Name:        course.Name,
-			Description: &course.Description,
+			Description: course.Description,
 		})
 	}
 	return coursesModel, nil
@@ -36,7 +36,7 @@ func (r *courseResolver) Category(ctx context.Context, obj *model.Course) (*mode
 	return &model.Category{
 		ID:          category.ID,
 		Name:        category.Name,
-		Description: &category.Description,
+		Description: category.Description,
 	}, nil
 }
 
@@ -49,7 +49,7 @@ func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCa
 	return &model.Category{
 		ID:          category.ID,
 		Name:        category.Name,
-		Description: &category.Description,
+		Description: category.Description,
 	}, nil
 }
 
@@ -62,7 +62,7 @@ func (r *mutationResolver) CreateCourse(ctx context.Context, input model.NewCour
 	return &model.Course{
 		ID:          course.ID,
 		Name:        course.Name,
-		Description: &course.Description,
+		Description: course.Description,
 	}, nil
 }
 
@@ -77,7 +77,7 @@ func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, erro
 		categoriesModel = append(categoriesModel, &model.Category{
 			ID:          category.ID,
 			Name:        category.Name,
-			Description: &category.Description,
+			Description: category.Description,
 		})
 	}
 	return categoriesModel, nil
@@ -94,7 +94,7 @@ func (r *queryResolver) Courses(ctx context.Context) ([]*model.Course, error) {
 		coursesModel = append(coursesModel, &model.Course{
 			ID:          course.ID,
 			Name:        course.Name,
-			Description: &course.Description,
+			Description: course.Description,
 		})
 	}
 	return coursesModel, nil
