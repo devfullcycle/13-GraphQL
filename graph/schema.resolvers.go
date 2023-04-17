@@ -5,9 +5,11 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/devfullcycle/13-GraphQL/graph/generated"
-	"github.com/devfullcycle/13-GraphQL/graph/model"
+	"github.com/LucianTavares/comunicacao_entre_sistemas/graphql/graph/dataloader"
+	"github.com/LucianTavares/comunicacao_entre_sistemas/graphql/graph/generated"
+	"github.com/LucianTavares/comunicacao_entre_sistemas/graphql/graph/model"
 )
 
 // Courses is the resolver for the courses field.
@@ -21,7 +23,7 @@ func (r *categoryResolver) Courses(ctx context.Context, obj *model.Category) ([]
 		coursesModel = append(coursesModel, &model.Course{
 			ID:          course.ID,
 			Name:        course.Name,
-			Description: &course.Description,
+			Description: course.Description,
 		})
 	}
 	return coursesModel, nil
@@ -29,15 +31,8 @@ func (r *categoryResolver) Courses(ctx context.Context, obj *model.Category) ([]
 
 // Category is the resolver for the category field.
 func (r *courseResolver) Category(ctx context.Context, obj *model.Course) (*model.Category, error) {
-	category, err := r.CategoryDB.FindByCourseID(obj.ID)
-	if err != nil {
-		return nil, err
-	}
-	return &model.Category{
-		ID:          category.ID,
-		Name:        category.Name,
-		Description: &category.Description,
-	}, nil
+	fmt.Printf("courseResolver.Category, course=%s, categoryId=%s \n", obj.ID, obj.CategoryID)
+	return dataloader.For(ctx).GetCategory(ctx, obj.CategoryID)
 }
 
 // CreateCategory is the resolver for the createCategory field.
@@ -49,7 +44,7 @@ func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCa
 	return &model.Category{
 		ID:          category.ID,
 		Name:        category.Name,
-		Description: &category.Description,
+		Description: category.Description,
 	}, nil
 }
 
@@ -62,13 +57,14 @@ func (r *mutationResolver) CreateCourse(ctx context.Context, input model.NewCour
 	return &model.Course{
 		ID:          course.ID,
 		Name:        course.Name,
-		Description: &course.Description,
+		Description: course.Description,
 	}, nil
 }
 
 // Categories is the resolver for the categories field.
 func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, error) {
 	categories, err := r.CategoryDB.FindAll()
+
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +73,7 @@ func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, erro
 		categoriesModel = append(categoriesModel, &model.Category{
 			ID:          category.ID,
 			Name:        category.Name,
-			Description: &category.Description,
+			Description: category.Description,
 		})
 	}
 	return categoriesModel, nil
@@ -85,19 +81,21 @@ func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, erro
 
 // Courses is the resolver for the courses field.
 func (r *queryResolver) Courses(ctx context.Context) ([]*model.Course, error) {
+	var coursesModel []*model.Course
 	courses, err := r.CourseDB.FindAll()
 	if err != nil {
 		return nil, err
 	}
-	var coursesModel []*model.Course
 	for _, course := range courses {
 		coursesModel = append(coursesModel, &model.Course{
 			ID:          course.ID,
 			Name:        course.Name,
-			Description: &course.Description,
+			Description: course.Description,
+			CategoryID:  course.CategoryID,
 		})
 	}
 	return coursesModel, nil
+	// }
 }
 
 // Category returns generated.CategoryResolver implementation.

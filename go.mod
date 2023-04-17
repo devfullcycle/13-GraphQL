@@ -1,10 +1,11 @@
-module github.com/devfullcycle/13-GraphQL
+module github.com/LucianTavares/comunicacao_entre_sistemas/graphql
 
 go 1.19
 
 require (
 	github.com/99designs/gqlgen v0.17.20
 	github.com/google/uuid v1.3.0
+	github.com/graph-gophers/dataloader v5.0.0+incompatible
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/vektah/gqlparser/v2 v2.5.1
 )
@@ -15,6 +16,7 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/mitchellh/mapstructure v1.3.1 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.8.1 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
