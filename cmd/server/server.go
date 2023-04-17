@@ -8,9 +8,10 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/devfullcycle/13-GraphQL/graph"
-	"github.com/devfullcycle/13-GraphQL/graph/generated"
-	"github.com/devfullcycle/13-GraphQL/internal/database"
+	"github.com/LucianTavares/comunicacao_entre_sistemas/graphql/graph"
+	"github.com/LucianTavares/comunicacao_entre_sistemas/graphql/graph/dataloader"
+	"github.com/LucianTavares/comunicacao_entre_sistemas/graphql/graph/generated"
+	"github.com/LucianTavares/comunicacao_entre_sistemas/graphql/internal/database"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -26,18 +27,23 @@ func main() {
 	categoryDb := database.NewCategory(db)
 	courseDb := database.NewCourse(db)
 
+	loader := dataloader.NewDataLoader(categoryDb)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
-		CategoryDB: categoryDb,
 		CourseDB:   courseDb,
+		CategoryDB: categoryDb,
 	}}))
 
+	dataloaderSrv := dataloader.Middleware(loader, srv)
+
+	http.Handle("/query", dataloaderSrv)
+
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
